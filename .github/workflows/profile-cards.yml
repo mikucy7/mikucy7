@@ -1,0 +1,27 @@
+name: Generate profile summary cards
+
+# 每天自动刷新统计卡片，卡片 SVG 生成到 profile-summary-cards/ 目录
+# 好处：图片存在自己仓库里，不依赖 github-readme-stats 等第三方服务
+#（该服务公共实例经常被暂停/限流，导致资料页卡片加载失败）
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * *" # 每天 UTC 0 点（北京时间 8 点）自动更新
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-cards:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate profile summary cards
+        uses: vn7n24fzkq/github-profile-summary-cards@release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          USERNAME: ${{ github.repository_owner }}
+          THEME: github
